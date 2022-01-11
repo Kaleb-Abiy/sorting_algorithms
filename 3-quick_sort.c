@@ -1,83 +1,76 @@
 #include "sort.h"
 
 /**
- * quick_sort - function that sorts an array of integers in
- * ascending order using the Quick sort algorithm
- * @array: integer array
- * @size: size_t
- */
-void quick_sort(int *array, size_t size)
+* partition - Lomutu partition scheme for quicksort algorithm
+* @a: Array to sort
+* @l: lowest index of array
+* @h: highest index of array
+* Return: index of pivot
+*/
+
+int partition(int *a, int l, int h)
 {
-	int limt  = size - 1;
+	int p, i, j, t;
+	static int size, k;
 
-	if (size < 2)
-		return;
+	if (k == 0)
+		size = h + 1, k++;
+	p = a[h];
+	i = l;
+	for (j = l; j < h; j++)
+	{
+		if (a[j] <= p)
+		{
+			if (i != j)
+			{
+				t = a[i];
+				a[i] = a[j];
+				a[j] = t;
+				print_array(a, size);
+			}
+			i++;
+		}
+	}
+	if (i != h)
+	{
+		t = a[i];
+		a[i] = a[h];
+		a[h] = t;
+		print_array(a, size);
+	}
 
-	partition(array, size, 0, limt);
+	return (i);
 }
 
 /**
- * partition - quick sort recursive
- * @arr: array
- * @size: size of array
- * @lower_limt: lower limit
- * @limt: upper limit
- */
-void partition(int *arr, size_t size, int lower_limt, int limt)
-{
-	int pivot;
+* qs - Quicksort recurssive function
+* @a: array to sort
+* @l: lowest index
+* @h: highest index
+*/
 
-	if (lower_limt < limt)
+void qs(int *a, int l, int h)
+{
+	int p;
+
+	if (l < h)
 	{
-		pivot = sort(arr, size, lower_limt,  limt);
-		partition(arr, size, lower_limt, pivot - 1);
-		partition(arr, size, pivot + 1, limt);
+		p = partition(a, l, h);
+		qs(a, l, p - 1);
+		qs(a, p + 1, h);
 	}
 }
 
-/**
- * sort - sorts an array according to quick sort algo
- * @arr: array
- * @lower_limt: lower limit
- * @limt: upper limit
- * @size: size of array
- * Return: swap_index
- */
-int sort(int *arr, size_t size, int lower_limt, int limt)
-{
-	int pivot = arr[limt], swap_index = lower_limt, i;
-
-	for (i = lower_limt; i < limt; i++)
-		if (arr[i] < pivot)
-		{
-			if (i != swap_index && arr[i] != arr[swap_index])
-				swap(&arr[i], &arr[swap_index], size, arr);
-
-			swap_index++;
-		}
-
-	if (limt != swap_index && arr[limt] != arr[swap_index])
-		swap(&arr[limt], &arr[swap_index], size, arr);
-
-	return (swap_index);
-}
 
 /**
- * swap - swaps two elements in an array.
- * @val1: first int to be swapped.
- * @val2: second element to be swapped.
- * @arr: array.
- * @size: size of array.
- * Return: nothing.
- */
-void swap(int *val1, int *val2, size_t size, int *arr)
+* quick_sort - sorts array using quicksort algorithm
+* @array: Array to sort
+* @size: Size of array to sort
+*/
+
+void quick_sort(int *array, size_t size)
 {
-	int tmp;
-
-	tmp = *val1;
-	*val1 = *val2;
-	*val2 = tmp;
-
-	print_array(arr, size);
+	if (array == NULL)
+		return;
+	qs(array, 0, size - 1);
 }
-
